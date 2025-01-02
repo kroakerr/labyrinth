@@ -1,42 +1,32 @@
 import turtle
 import math
-import time  # Import the time module for the clock
+import time  # time modul für clock (Monster)
 
-###############################################################################
-# 1) SCREEN SETUP
-###############################################################################
+# 1) Fenster
+
 Fenster = turtle.Screen()
 Fenster.bgcolor("chocolate")
 Fenster.title("Labyrinth")
 Fenster.setup(700, 700)
 
-###############################################################################
-# 2) REGISTER SPRITES
-###############################################################################
+# Alle Sprites
+
 Fenster.addshape("sprites/wall.gif")
-Fenster.addshape("sprites/sword.gif")
 Fenster.addshape("sprites/eye.gif")
 Fenster.addshape("sprites/door.gif")
 Fenster.addshape("sprites/door2.gif")
 Fenster.addshape("sprites/player.gif")
 Fenster.addshape("sprites/key.gif")
-# If you have more (key.gif, etc.), add them as well.
 
-###############################################################################
-# 3) GLOBAL VISIBILITY RADIUS
-###############################################################################
-view_radius = 120  # The default "flashlight" distance
+# Globale Werte
 
-###############################################################################
-# 4) GLOBAL CURRENT LEVEL
-###############################################################################
-current_level = 1  # We'll keep an integer 'current_level', starting at 1.
+current_level = 1
 lives = 3
-###############################################################################
-# 5) CLASSES
-###############################################################################
+view_radius = 120 
+
+# Klassen
+
 class Mauer(turtle.Turtle):
-    """Normal wall tile."""
     def __init__(self):
         super().__init__()
         self.shape("sprites/wall.gif")
@@ -53,9 +43,9 @@ class Spieler(turtle.Turtle):
         self.speed(0)
 
         self.gold = 0
-        self.hasKey = False  # If you have a key mechanic
+        self.hasKey = False 
 
-        # bounding box so player can't walk off the map
+        # Damit Spieler nicht aus dem Labyrinth kommen
         self.min_x = -288
         self.max_x =  288
         self.min_y = -288
@@ -68,10 +58,7 @@ class Spieler(turtle.Turtle):
 
     def _try_open_door(self, x, y):
         """
-        Check if (x, y) is a door coordinate. If so, and player has >= 200 gold,
-        remove that door from DoorListe (open it), subtract 200 gold, and return True.
-        If can't open, print message and return False.
-        If not a door coordinate, return True (meaning no door logic is triggered).
+        Wenn (x, y) eine Tür ist, wird 200 Gold subtrahiert und die Tür wird von doorliste gelöscht
         """
         for d in DoorListe:
             if d.x_block == x and d.y_block == y:
@@ -97,18 +84,9 @@ class Spieler(turtle.Turtle):
         if not self._check_bounding_box(move_to_x, move_to_y):
             return
 
-        # Is it a wall?
-        if (move_to_x, move_to_y) in Mauerliste:
-            # It's a wall, so block movement
-            print("Blocked by a wall!")
-            return
-
-        # If it's not in Mauerliste, it might be a door coordinate in DoorListe
-        # We handle that logic in _try_open_door
         if not self._try_open_door(move_to_x, move_to_y):
-            return  # door blocked us
+            return  
 
-        # If door is opened or no door, we can move
         self.goto(move_to_x, move_to_y)
 
     def go_down(self):
@@ -166,7 +144,6 @@ class Spieler(turtle.Turtle):
         return dist < 5
 
 class Schatz(turtle.Turtle):
-    """Treasure tile, gives 100 gold when collided."""
     def __init__(self, x, y):
         super().__init__()
         self.left(90)
@@ -182,7 +159,7 @@ class Schatz(turtle.Turtle):
         self.hideturtle()
 
 class Eye(turtle.Turtle):
-    """Eye tile, extends the player's view radius by 40."""
+    # Radius wird um 40 erhöht
     def __init__(self, x, y):
         super().__init__()
         self.shape("sprites/eye.gif")
@@ -196,7 +173,6 @@ class Eye(turtle.Turtle):
         self.hideturtle()
 
 class Ausgang(turtle.Turtle):
-    """Exit tile 'A'. If you want a key required, handle it in main loop."""
     def __init__(self, x, y):
         super().__init__()
         self.shape("sprites/door2.gif")
@@ -209,11 +185,9 @@ class Ausgang(turtle.Turtle):
         self.hideturtle()
 
 class Key(turtle.Turtle):
-    """Key tile 'K'."""
     def __init__(self, x, y):
         super().__init__()
         self.left(90)
-        # If you have a sprite for keys, use that. Example: self.shape("sprites/key.gif")
         self.shape("sprites/key.gif")
         self.color("purple")
         self.penup()
@@ -225,14 +199,10 @@ class Key(turtle.Turtle):
         self.hideturtle()
 
 class Door(turtle.Turtle):
-    """
-    A door tile using its own 'sprites/door.gif' image.
-    Importantly, we do NOT store its (x,y) in Mauerliste, so it's not stamped as a wall.
-    We'll store it in DoorListe, and handle logic in player's movement code.
-    """
+
     def __init__(self, x, y):
         super().__init__()
-        self.shape("sprites/door.gif")  # Now it's truly a door, not a wall image
+        self.shape("sprites/door.gif") 
         self.penup()
         self.speed(0)
         self.goto(x, y)
@@ -244,21 +214,19 @@ class Door(turtle.Turtle):
         self.hideturtle()
 
 class Monster(turtle.Turtle):
-    """
-    Monster tile 'M'. Moves back and forth or up and down between walls.
-    """
+
     def __init__(self, x, y):
         super().__init__()
-        self.shape("square")  # Replace with a sprite if you have one: "sprites/monster.gif"
+        self.shape("square") 
         self.color("red")
         self.penup()
         self.speed(0)
         self.goto(x, y)
-        self.direction = None  # Default direction (will be set below)
+        self.direction = None 
         self.set_initial_direction()
 
     def set_initial_direction(self):
-        """Set the initial direction for the monster based on surrounding walls."""
+
         current_x = self.xcor()
         current_y = self.ycor()
 
@@ -299,9 +267,6 @@ class Monster(turtle.Turtle):
                 self.goto(current_x, current_y - 24)
 
 
-###############################################################################
-# HUD: GOLD & LEVEL
-###############################################################################
 def Anzeige(x):
     turtle.clear()
     turtle.penup()
@@ -315,11 +280,11 @@ def Anzeige(x):
     turtle.pendown()
     turtle.write("Level: " + str(current_level), font=("Verdana", 15, "normal"))
 
-    # Display lives
+    # Display Leben
     turtle.penup()
     turtle.goto(200, 300)
     turtle.pendown()
-    if lives == 1:  # If only one life is left, display it in red
+    if lives == 1:  # Wenn nur noch ein Leben übrig: rot anzeiggen
         turtle.color("red")
     else:
         turtle.color("white")
@@ -327,24 +292,24 @@ def Anzeige(x):
 
     turtle.hideturtle()
 
-###############################################################################
-# 7) LEVELS
-###############################################################################
-Levelliste = [""]  # index 0 is dummy
+
+# Levels
+
+Levelliste = [""]  # dummy-wert?
 
 # Example levels
 Level_1 = [
 "XXXXXXXXXXXXXXXXXXXXXXXXX",
 "XP XXXXXXXXXXXXXXXXXXXXXX",
 "X  XXXXXXXXXXXXXXXXXXXXXX",
-"X   T   XXXXXXXXXXXXXXXXXX",
+"X   T   XXXXXXXXXXXXXXXXX",
 "XXXXXX  XXXXXXX    XXXXXX",
 "XXXXXX  XXXXXXX    XXXXXX",
 "XXXXXX     XXXX  K XXXXXX",
 "XXXXXXXXX  XXXX    XXXXXX",
 "XXXXXXXXXE XXXX  M XXXXXX",
 "XXXXXXXXX  XXXX    XXXXXX",
-"XXXXXXXXX   XXXDXXXXXXXX",
+"XXXXXXXXX   XXXDXXXXXXXXX",
 "XXXXXXXXXXX     T XXXXXXX",
 "XXXXXXXXXXX  XXXXXXXXXXXX",
 "XXXXXXXXXXX   XXXXXXXXXXX",
@@ -355,13 +320,61 @@ Level_1 = [
 "XXXXXXXXXXXXX  XXXXXXXXXX",
 "XXXXXXXXXXXXX  XXXXXXXXXX",
 "XXXXXXXXXXXXX  XXXXXXXXXX",
-"XXXXXXXX  M     XXXXXXXXXX",
+"XXXXXXXX  M     XXXXXXXXX",
 "XXXXXXXXXXXXX AXXXXXXXXXX",
 "XXXXXXXXXXXXXXXXXXXXXXXXX",
 "XXXXXXXXXXXXXXXXXXXXXXXXX"
 ]
 
 Level_2 = [
+"XXXXXXXXXXXXXXXXXXXXX",
+"XTTT   M    XXX X XPX",
+"XDXXXXXXX XXX XXX X X",
+"X   X            EX X",
+"XXX XXX XXXXX X XXX X",
+"X   X     X   X X   X",
+"XXX X X XXX X XXXXX X",
+"X   X X   X X  TT   X",
+"X XXX XXXXXXXXXXX XXX",
+"X              MX   X",
+"XXX X XXXXX XXXXXXX X",
+"X X X   X    MX   X X",
+"X X X X XXXXX X X X X",
+"X   X X X X   X X X X",
+"X X X X X X X X X XXX",
+"XTX X X X   X   X   X",
+"XXXXX X XXXXXXXXX X X",
+"X     X X X   X  MXDX",
+"X XXXXXXX XXX X XXX X",
+"XKX           X    AX",
+"XXXXXXXXXXXXXXXXXXXXX",
+]
+
+Level_3 = [
+"XXXXXXXXXXXXXXXXXXXXX",
+"X   X X X       X XTX",
+"X X X X XXX X XXX X X",
+"X X X       X X     X",
+"X X X XXXXXXX XXXXX X",
+"XPX      MXT   MX   X",
+"XXX XXX XXXXXXXXXXX X",
+"X   X   X X         X",
+"X X XXXXX XXX XXXXX X",
+"X X X   X      MX   X",
+"X XXX X XXX XXXXX X X",
+"X X   X         X X X",
+"X XXX X XXXXX XXXXX X",
+"X   MX X   X X  M T X",
+"X XXX XXX X X XXXXXXX",
+"X X   X X X      MX X",
+"X XXX X X XXXDXXX X X",
+"X X   X     X  MX X X",
+"X XXXXX XXXXXDXXX X X",
+"X  T MX XA     MX   X",
+"XXXXXXXXXXXXXXXXXXXXX",
+]
+
+Level_4 = [
 "XXXXXXXXXXXXXXXXXXXXX",
 "X P   E X X   XT    X",
 "XXX XXXXX X X XXXXX X",
@@ -372,7 +385,7 @@ Level_2 = [
 "X X     X X X   X X X",
 "X XXXXX XMXXX XXX XKX",
 "X     X X X X     X X",
-"X XXX X XXX X XXXXXMX",
+"X XXX X XXX X XXXXX X",
 "X   X     X     X X X",
 "XXX XXX XXX XXX X X X",
 "X     X X     X     X",
@@ -382,30 +395,6 @@ Level_2 = [
 "X   X X   X       XDX",
 "X X X XXX XXX X XXX X",
 "X X        TX X   XAX",
-"XXXXXXXXXXXXXXXXXXXXX"
-]
-
-Level_3 = [
-"XXXXXXXXXXXXXXXXXXXXX",
-"X       XX   X       X",
-"X XXXX X  X X XX X XX",
-"X   X X  X X  X X  X",
-"XXXX XX XX X XX X XX X",
-"X   X   X  X  X  X  X",
-"X XX X XXXX XXXX XX XX",
-"X X  X   X  X    X  X",
-"X XX XX X X XX X X X XX",
-"X  X  X X X  X X X X  X",
-"XX X XX X XX XX X XX XX",
-"X  X  X X    X X X  X X",
-"X XX X XX XXXX XX XX X X",
-"X  X X  X  X   X  X   X",
-"XX X XX X XX XXXX X XX X",
-"X  X   X  X    X  X  X",
-"X XX XXXXXX XX XXXX XX X",
-"X  X         X   X   X",
-"XX XX X XXXX X XX XXXX X",
-"X   X  X  X X X    X X",
 "XXXXXXXXXXXXXXXXXXXXX"
 ]
 
@@ -419,22 +408,17 @@ EyeListe   = []
 AusgangListe = []
 KeyListe   = []
 DoorListe  = []
-MonsterListe = []  # List to store monster objects
+MonsterListe = [] 
 
-###############################################################################
-# 8) CREATE TURTLES
-###############################################################################
+
 Stein = Mauer()
 Stein.hideturtle()
 player = Spieler()
 
-###############################################################################
-# 9) BUILD THE MAZE (START FUNCTION)
-###############################################################################
 def Start(level_index):
     global Schatzliste, Mauerliste, EyeListe, AusgangListe, KeyListe, DoorListe, MonsterListe
 
-    # Clear old data
+    # Alte Locations löschen
     Schatzliste = []
     Mauerliste = []
     EyeListe   = []
@@ -442,9 +426,9 @@ def Start(level_index):
     KeyListe   = []
     DoorListe  = []
     for monster in MonsterListe:
-        monster.hideturtle()  # Hide the old monsters
-        monster.goto(2000, 2000)  # Move them off-screen
-    MonsterListe = []  # Create a new empty list for the new level
+        monster.hideturtle() 
+        del monster
+    MonsterListe = []
 
     Stein.clearstamps()
 
@@ -471,24 +455,22 @@ def Start(level_index):
             elif character == "D":
                 DoorListe.append(Door(screen_x, screen_y))
             elif character == "M":
-                monster = Monster(screen_x, screen_y)  # Create the monster
-                MonsterListe.append(monster)
+                MonsterListe.append(Monster(screen_x, screen_y))
 
-###############################################################################
-# 10) RE-DRAW SCENE
-###############################################################################
+# Neuzeichnen
+
 def redraw_scene():
     global view_radius
     Stein.clearstamps()
 
-    # Walls
+    # Mauern
     for (wx, wy) in Mauerliste:
         dist = math.hypot(player.xcor() - wx, player.ycor() - wy)
         if dist < view_radius:
             Stein.goto(wx, wy)
             Stein.stamp()
 
-    # Treasures
+    # Schatz/Gold
     for schatz in Schatzliste:
         d_schatz = math.hypot(player.xcor() - schatz.xcor(),
                               player.ycor() - schatz.ycor())
@@ -497,7 +479,7 @@ def redraw_scene():
         else:
             schatz.hideturtle()
 
-    # Eyes
+    # Auge
     for eye in EyeListe:
         d_eye = math.hypot(player.xcor() - eye.xcor(),
                           player.ycor() - eye.ycor())
@@ -506,7 +488,7 @@ def redraw_scene():
         else:
             eye.hideturtle()
 
-    # Keys
+    # Schlüüsel
     for k in KeyListe:
         d_key = math.hypot(player.xcor() - k.xcor(),
                           player.ycor() - k.ycor())
@@ -515,8 +497,7 @@ def redraw_scene():
         else:
             k.hideturtle()
 
-    # Doors
-    # Because the door is *not* in Mauerliste, we simply show the door if in range
+    # Tür
     for d in DoorListe:
         d_door = math.hypot(player.xcor() - d.xcor(),
                             player.ycor() - d.ycor())
@@ -543,9 +524,8 @@ def redraw_scene():
         else:
             monster.hideturtle()
 
-###############################################################################
 # 11) GO TO NEXT LEVEL (HELPER FUNCTION)
-###############################################################################
+
 def go_to_next_level():
     global current_level, lives
     current_level += 1
@@ -559,24 +539,23 @@ def go_to_next_level():
         print("No more levels! You won!")
         turtle.bye()
 
-###############################################################################
 # 12) KEYBINDINGS
-###############################################################################
+
 turtle.listen()
 turtle.onkey(player.go_left, "Left")
 turtle.onkey(player.go_right, "Right")
 turtle.onkey(player.go_up, "Up")
 turtle.onkey(player.go_down, "Down")
 
-###############################################################################
+
 # 13) MAIN LOOP
-###############################################################################
+
 Fenster.tracer(0)
 
 Start(current_level)
 
 while True:
-    # Check collisions with treasure
+    # Kollision mit Schatz
     for schatz in Schatzliste:
         if player.kollision(schatz):
             player.gold += schatz.gold
@@ -585,7 +564,7 @@ while True:
             Schatzliste.remove(schatz)
             break
 
-    # Check collisions with eye => increase radius
+    # Kollision mit dem Auge: größeres Sichtfeld
     for eye in EyeListe:
         if player.kollision(eye):
             view_radius += eye.extension
@@ -594,7 +573,7 @@ while True:
             EyeListe.remove(eye)
             break
 
-    # Check collisions with key => hasKey = True
+    # Kollision mit Schlüssel
     for k in KeyListe:
         if player.kollision(k):
             print("Collected the Key!")
@@ -603,7 +582,7 @@ while True:
             KeyListe.remove(k)
             break
 
-    # Check collisions with A => next level only if hasKey is True
+    # Bedinung: Spieler braucht Schlüssel um ins nächste Level zu kommen
     for aus in AusgangListe:
         if player.kollision(aus):
             if player.hasKey:
@@ -619,30 +598,34 @@ while True:
         
         if player.kollision(monster):
             lives -= 1
-            print("Hit by a monster! Lives remaining:", lives)
+            print("Du wurdest von einem Monster getroffen! Du hast nur noch so viel Leben: ", lives)
             if lives == 0:
                 print("Game Over!")
-                # Display "Game Over" on the screen
                 turtle.penup()
                 turtle.goto(0, 0)
                 turtle.color("red")
                 turtle.write("Game Over", align="center", font=("Arial", 40, "normal"))
-                turtle.done()  # Stop the game
+                turtle.done() 
             else:
-                # Reset player position after losing a life (you can customize this)
-                player.goto(player.xcor(), player.ycor() - 24)  # Move player slightly down
-            break  # Exit the loop after a collision
+                # Spieler wird um 24 Pixel nach unten versetzt
+                player.goto(player.xcor(), player.ycor() - 24) 
+            break 
 
 
-    # Move the monsters
     for monster in MonsterListe:
         monster.move()
 
-    # Update gold & level text
     Anzeige(player.gold)
 
-    # Re-draw
     redraw_scene()
 
     Fenster.update()
-    time.sleep(0.1)  # Add a small delay to control the monster's speed
+     # Geschwindigkeit des Monsters
+    if current_level == 1:
+        time.sleep(0.1) 
+    if current_level == 2:
+        time.sleep(0.08)
+    if current_level == 3:
+        time.sleep(0.06)
+    if current_level == 4:
+        time.sleep(0.05)
