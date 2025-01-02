@@ -20,7 +20,7 @@ Fenster.addshape("sprites/key.gif")
 
 # Globale Werte
 
-current_level = 1
+current_level = 3
 lives = 3
 view_radius = 120 
 
@@ -307,6 +307,34 @@ Level_1 = [
 "XXXXXX  XXXXXXX    XXXXXX",
 "XXXXXX     XXXX  K XXXXXX",
 "XXXXXXXXX  XXXX    XXXXXX",
+"XXXXXXXXXE XXXX    XXXXXX",
+"XXXXXXXXX  XXXX    XXXXXX",
+"XXXXXXXXX   XXXDXXXXXXXXX",
+"XXXXXXXXXXX     T XXXXXXX",
+"XXXXXXXXXXX  XXXXXXXXXXXX",
+"XXXXXXXXXXX   XXXXXXXXXXX",
+"XXXXXXX       XXXXXXXXXXX",
+"XXXXXXXXXXXX  XXXXXXXXXXX",
+"XXXXXXXXXXXX  XXXXXXXXXXX",
+"XXXXXXXXXXXXX  XXXXXXXXXX",
+"XXXXXXXXXXXXX  XXXXXXXXXX",
+"XXXXXXXXXXXXX  XXXXXXXXXX",
+"XXXXXXXXXXXXX  XXXXXXXXXX",
+"XXXXXXXX        XXXXXXXXX",
+"XXXXXXXXXXXXX AXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXXXXXXX"
+]
+
+Level_2 = [
+"XXXXXXXXXXXXXXXXXXXXXXXXX",
+"XP XXXXXXXXXXXXXXXXXXXXXX",
+"X  XXXXXXXXXXXXXXXXXXXXXX",
+"X   T   XXXXXXXXXXXXXXXXX",
+"XXXXXX  XXXXXXX    XXXXXX",
+"XXXXXX  XXXXXXX    XXXXXX",
+"XXXXXX     XXXX  K XXXXXX",
+"XXXXXXXXX  XXXX    XXXXXX",
 "XXXXXXXXXE XXXX  M XXXXXX",
 "XXXXXXXXX  XXXX    XXXXXX",
 "XXXXXXXXX   XXXDXXXXXXXXX",
@@ -326,31 +354,55 @@ Level_1 = [
 "XXXXXXXXXXXXXXXXXXXXXXXXX"
 ]
 
-Level_2 = [
+Level_6 = [
+"XXXXXXXXXXXXXXXXXXXXX",
+"X   X X X       X XTX",
+"X X X X XXX X XXX X X",
+"X X X       X X     X",
+"X X X XXXXXXX XXXXX X",
+"XPX       X  T MX   X",
+"XXX XXX XXXXXXXXXXX X",
+"X   X   X X         X",
+"X X XXXXX XXX XXXXX X",
+"X X X   X      MX   X",
+"X XXX X XXX XXXXX X X",
+"X X   X         X X X",
+"X XXX X XXXXX XXXXX X",
+"X   MX X   X X    T X",
+"X XXX XXX X X XXXXXXX",
+"X X   X X X       X X",
+"X XXX X X XXXDXXX X X",
+"X X   X     X   X X X",
+"X XXXXX XXXXXDXXX X X",
+"X  T  X XA      X   X",
+"XXXXXXXXXXXXXXXXXXXXX",
+]
+
+Level_4 = [
 "XXXXXXXXXXXXXXXXXXXXX",
 "XTTT   M    XXX X XPX",
 "XDXXXXXXX XXX XXX X X",
 "X   X            EX X",
 "XXX XXX XXXXX X XXX X",
-"X   X     X   X X   X",
+"X   X     X   X X  MX",
 "XXX X X XXX X XXXXX X",
 "X   X X   X X  TT   X",
 "X XXX XXXXXXXXXXX XXX",
 "X              MX   X",
 "XXX X XXXXX XXXXXXX X",
-"X X X   X    MX   X X",
+"X X X   X     X   X X",
 "X X X X XXXXX X X X X",
 "X   X X X X   X X X X",
 "X X X X X X X X X XXX",
 "XTX X X X   X   X   X",
 "XXXXX X XXXXXXXXX X X",
 "X     X X X   X  MXDX",
-"X XXXXXXX XXX X XXX X",
+"X XXXXXXX XXX X XXXDX",
 "XKX           X    AX",
 "XXXXXXXXXXXXXXXXXXXXX",
 ]
 
-Level_3 = [
+Level_5 = [
 "XXXXXXXXXXXXXXXXXXXXX",
 "X   X X X       X XTX",
 "X X X X XXX X XXX X X",
@@ -364,7 +416,7 @@ Level_3 = [
 "X XXX X XXX XXXXX X X",
 "X X   X         X X X",
 "X XXX X XXXXX XXXXX X",
-"X   MX X   X X  M T X",
+"X  MX X   X X  M T  X",
 "X XXX XXX X X XXXXXXX",
 "X X   X X X      MX X",
 "X XXX X X XXXDXXX X X",
@@ -374,33 +426,35 @@ Level_3 = [
 "XXXXXXXXXXXXXXXXXXXXX",
 ]
 
-Level_4 = [
+Level_3 = [
 "XXXXXXXXXXXXXXXXXXXXX",
-"X P   E X X   XT    X",
+"X P   E X X   XM   TX",
 "XXX XXXXX X X XXXXX X",
-"XTX M       XTX     X",
+"XTX        TXTX     X",
 "X XXX X XXXXXXX X X X",
 "X X   X       X X X X",
 "X X XXXXX X X XXX XXX",
 "X X     X X X   X X X",
-"X XXXXX XMXXX XXX XKX",
+"X XXXXX X XXX XXX XKX",
 "X     X X X X     X X",
 "X XXX X XXX X XXXXX X",
 "X   X     X     X X X",
 "XXX XXX XXX XXX X X X",
-"X     X X     X     X",
+"X    MX X     X     X",
 "XXX XXX XXXXX XXXXXDX",
 "X   X   X X       X X",
 "XXX XXXXX XXX XXXXX X",
 "X   X X   X       XDX",
 "X X X XXX XXX X XXX X",
-"X X        TX X   XAX",
+"X X         X X   XAX",
 "XXXXXXXXXXXXXXXXXXXXX"
 ]
 
 Levelliste.append(Level_1)
 Levelliste.append(Level_2)
 Levelliste.append(Level_3)
+Levelliste.append(Level_4)
+Levelliste.append(Level_5)
 
 Schatzliste = []
 Mauerliste = []
@@ -621,11 +675,7 @@ while True:
 
     Fenster.update()
      # Geschwindigkeit des Monsters
-    if current_level == 1:
+    if current_level <= 2:
         time.sleep(0.1) 
-    if current_level == 2:
+    if current_level > 2:
         time.sleep(0.08)
-    if current_level == 3:
-        time.sleep(0.06)
-    if current_level == 4:
-        time.sleep(0.05)
