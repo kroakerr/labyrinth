@@ -17,10 +17,11 @@ Fenster.addshape("sprites/door.gif")
 Fenster.addshape("sprites/door2.gif")
 Fenster.addshape("sprites/player.gif")
 Fenster.addshape("sprites/key.gif")
+Fenster.addshape("sprites/monster.gif")
 
 # Globale Werte
 
-current_level = 3
+current_level = 5
 lives = 3
 view_radius = 120 
 
@@ -82,6 +83,10 @@ class Spieler(turtle.Turtle):
 
         # bounding box
         if not self._check_bounding_box(move_to_x, move_to_y):
+            return
+
+        if (move_to_x, move_to_y) in Mauerliste:
+            print("Blocked by a wall!")
             return
 
         if not self._try_open_door(move_to_x, move_to_y):
@@ -217,8 +222,7 @@ class Monster(turtle.Turtle):
 
     def __init__(self, x, y):
         super().__init__()
-        self.shape("square") 
-        self.color("red")
+        self.shape("sprites/monster.gif") 
         self.penup()
         self.speed(0)
         self.goto(x, y)
@@ -354,7 +358,7 @@ Level_2 = [
 "XXXXXXXXXXXXXXXXXXXXXXXXX"
 ]
 
-Level_6 = [
+Level_5 = [
 "XXXXXXXXXXXXXXXXXXXXX",
 "X   X X X       X XTX",
 "X X X X XXX X XXX X X",
@@ -362,13 +366,13 @@ Level_6 = [
 "X X X XXXXXXX XXXXX X",
 "XPX       X  T MX   X",
 "XXX XXX XXXXXXXXXXX X",
-"X   X   X X         X",
+"X   X   XKX         X",
 "X X XXXXX XXX XXXXX X",
 "X X X   X      MX   X",
 "X XXX X XXX XXXXX X X",
-"X X   X         X X X",
+"X     X         X X X",
 "X XXX X XXXXX XXXXX X",
-"X   MX X   X X    T X",
+"X  MX X   X X    T  X",
 "X XXX XXX X X XXXXXXX",
 "X X   X X X       X X",
 "X XXX X X XXXDXXX X X",
@@ -402,7 +406,7 @@ Level_4 = [
 "XXXXXXXXXXXXXXXXXXXXX",
 ]
 
-Level_5 = [
+Level_6 = [
 "XXXXXXXXXXXXXXXXXXXXX",
 "X   X X X       X XTX",
 "X X X X XXX X XXX X X",
