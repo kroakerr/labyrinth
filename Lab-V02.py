@@ -598,13 +598,13 @@ turtle.onkey(player.go_up, "Up")
 turtle.onkey(player.go_down, "Down")
 
 
-# 13) MAIN LOOP
+# Main Loop
 
 Fenster.tracer(0)
 alert = turtle.Turtle()
 alert.hideturtle()
 alert.penup()
-alert.goto(0, 100)  # Position the alert
+alert.goto(0, 100)  
 alert.color("red")
 
 Start(jetziges_level)
